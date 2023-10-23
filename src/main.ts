@@ -17,6 +17,8 @@ if (ctx) {
   //const cursor = { active: false, x: 0, y: 0 };
   let drawing = false;
   const points: { x: number; y: number }[][] = [];
+  const undo: { x: number; y: number }[][] = [];
+  const redo: { x: number; y: number }[][] = [];
 
   canvas.addEventListener("mousedown", (e) => {
     drawing = true;
@@ -56,6 +58,16 @@ if (ctx) {
   clearButton.style.padding = "7px";
   clearButton.style.border = "1px solid black"; //thin black border
 
+  const undoButton = document.createElement("button");
+  undoButton.innerHTML = "Undo";
+  undoButton.style.padding = "7px";
+  undoButton.style.border = "1px solid black"; //thin black border
+
+  const redoButton = document.createElement("button");
+  redoButton.innerHTML = "Redo";
+  redoButton.style.padding = "7px";
+  redoButton.style.border = "1px solid black"; //thin black border
+
   document.title = gameName;
 
   const header = document.createElement("h1");
@@ -63,11 +75,31 @@ if (ctx) {
   app.append(header);
   app.appendChild(canvas);
   app.appendChild(clearButton);
+  app.appendChild(undoButton);
+  app.appendChild(redoButton);
 
   clearButton.addEventListener("click", () => {
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
     points.length = 0;
+    undo.length = 0;
+    redo.length = 0;
     canvas.dispatchEvent(new Event("drawing-changed"));
+  });
+
+  undoButton.addEventListener("click", () => {
+    if (points.length > 0) {
+      undo.push(points.pop()!);
+      redo.length = 0;
+      canvas.dispatchEvent(new Event("drawing-changed"));
+    }
+  });
+
+  redoButton.addEventListener("click", () => {
+    if (undo.length > 0) {
+      points.push(undo.pop()!);
+      redo.length = 0;
+      canvas.dispatchEvent(new Event("drawing-changed"));
+    }
   });
 
   canvas.addEventListener("drawing-changed", () => {
