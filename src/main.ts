@@ -2,7 +2,7 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
-const gameName = "Pallavi's game";
+const gameName = "Sticker Pad";
 
 const canvas = document.createElement("canvas");
 canvas.width = 256;
@@ -17,6 +17,8 @@ const commands: LineCommand[] = [];
 const redoCommands: LineCommand[] = [];
 
 let currentLineCommand: LineCommand | null = null;
+let markerStyle = "thin";
+
 let cursorCommand: {
   execute: (arg0: CanvasRenderingContext2D) => void;
 } | null = null;
@@ -38,12 +40,14 @@ class CursorCommand {
 
 class LineCommand {
   points: { x: number; y: number }[];
-  constructor(x: number, y: number) {
+  thickness = 1;
+  constructor(x: number, y: number, thickness: number) {
     this.points = [{ x, y }];
+    this.thickness = thickness;
   }
   execute(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = this.thickness;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.beginPath();
@@ -66,7 +70,11 @@ canvas.addEventListener("mouseout", () => {
 });
 
 canvas.addEventListener("mousedown", (e) => {
-  currentLineCommand = new LineCommand(e.offsetX, e.offsetY);
+  currentLineCommand = new LineCommand(
+    e.offsetX,
+    e.offsetY,
+    markerStyle === "thin" ? 1 : 5
+  );
   commands.push(currentLineCommand);
   const start = 0;
   redoCommands.splice(start, redoCommands.length);
@@ -102,6 +110,16 @@ redoButton.innerHTML = "Redo";
 redoButton.style.padding = "7px";
 redoButton.style.border = "1px solid black"; // Thin black border
 
+const thinButton = document.createElement("button");
+thinButton.innerHTML = "Thin";
+thinButton.style.padding = "7px";
+thinButton.style.border = "1px solid black"; // Thin black border
+
+const thickButton = document.createElement("button");
+thickButton.innerHTML = "Thick";
+thickButton.style.padding = "7px";
+thickButton.style.border = "1px solid black"; // Thin black border
+
 document.title = gameName;
 
 const header = document.createElement("h1");
@@ -111,6 +129,8 @@ app.appendChild(canvas);
 app.appendChild(clearButton);
 app.appendChild(undoButton);
 app.appendChild(redoButton);
+app.appendChild(thinButton);
+app.appendChild(thickButton);
 
 clearButton.addEventListener("click", () => {
   const start = 0;
@@ -133,6 +153,19 @@ redoButton.addEventListener("click", () => {
     canvas.dispatchEvent(new Event("drawing-changed"));
   }
 });
+
+thinButton.addEventListener("click", () => {
+  markerStyle = "thin";
+  thinButton.classList.add("selectedTool");
+  thickButton.classList.remove("selectedTool");
+});
+
+thickButton.addEventListener("click", () => {
+  markerStyle = "thick";
+  thickButton.classList.add("selectedTool");
+  thinButton.classList.remove("selectedTool");
+});
+
 if (ctx) {
   canvas.addEventListener("drawing-changed", () => {
     const x = 0;
