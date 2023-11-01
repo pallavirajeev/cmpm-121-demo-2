@@ -19,24 +19,68 @@ const redoCommands: LineCommand[] = [];
 let currentLineCommand: LineCommand | null = null;
 let markerStyle = "thin";
 
-let cursorCommand: {
-  execute: (arg0: CanvasRenderingContext2D) => void;
-} | null = null;
+// let cursorCommand: {
+//   execute: (arg0: CanvasRenderingContext2D) => void;
+// } | null = null;
 
-class CursorCommand {
+// class CursorCommand {
+//   x: number;
+//   y: number;
+//   constructor(x: number, y: number) {
+//     this.x = x;
+//     this.y = y;
+//   }
+//   execute(ctx: CanvasRenderingContext2D) {
+//     // const xOff = 8;
+//     // const yOff = 16;
+//     // ctx.font = "32px monospace";
+//     // ctx.fillText("*", this.x - xOff, this.y + yOff);
+//     const yOffset = -1;
+//     ctx.strokeStyle = "black";
+//     ctx.lineWidth = markerStyle === "thin" ? 1 : 5;
+//     ctx.beginPath();
+//     ctx.arc(this.x, this.y + yOffset, ctx.lineWidth / 2, 0, 2 * Math.PI);
+//     ctx.stroke();
+//   }
+// }
+
+class ToolPreview {
   x: number;
   y: number;
-  constructor(x: number, y: number) {
+  visible: boolean;
+
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.visible = false;
+  }
+
+  setPosition(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
-  execute(ctx: CanvasRenderingContext2D) {
-    const xOff = 8;
-    const yOff = 16;
-    ctx.font = "32px monospace";
-    ctx.fillText("*", this.x - xOff, this.y + yOff);
+
+  show() {
+    this.visible = true;
+  }
+
+  hide() {
+    this.visible = false;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this.visible) {
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = markerStyle === "thin" ? 1 : 5;
+      const yOffset = -2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y + yOffset, ctx.lineWidth / 2, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
   }
 }
+
+const toolPreview = new ToolPreview();
 
 class LineCommand {
   points: { x: number; y: number }[];
@@ -50,6 +94,7 @@ class LineCommand {
     ctx.lineWidth = this.thickness;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
+
     ctx.beginPath();
     const start = 0;
     const { x, y } = this.points[start];
@@ -64,16 +109,39 @@ class LineCommand {
   }
 }
 
+// class ToolPreview {
+//   x: number;
+//   y: number;
+
+//   constructor(x: number, y: number) {
+//     this.x = x;
+//     this.y = y;
+//   }
+
+//   draw(ctx: CanvasRenderingContext2D) {
+//     // Draw the tool preview (e.g., a circle with the current line thickness)
+//     ctx.strokeStyle = "black";
+//     ctx.lineWidth = markerStyle === "thin" ? 1 : 5;
+//     ctx.beginPath();
+//     ctx.arc(this.x, this.y, ctx.lineWidth / 2, 0, 2 * Math.PI);
+//     ctx.stroke();
+//   }
+// }
+
 canvas.addEventListener("mouseout", () => {
-  cursorCommand = null;
+  //cursorCommand = null;
+  toolPreview.hide();
   canvas.dispatchEvent(new Event("drawing-changed"));
 });
 
 canvas.addEventListener("mousedown", (e) => {
+  toolPreview.hide();
+  const thin = 1;
+  const thick = 5;
   currentLineCommand = new LineCommand(
     e.offsetX,
     e.offsetY,
-    markerStyle === "thin" ? 1 : 5
+    markerStyle === "thin" ? thin : thick
   );
   commands.push(currentLineCommand);
   const start = 0;
@@ -82,12 +150,33 @@ canvas.addEventListener("mousedown", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  cursorCommand = new CursorCommand(e.offsetX, e.offsetY);
-  canvas.dispatchEvent(new Event("drawing-changed"));
-  const one = 1;
-  if (e.buttons == one && currentLineCommand) {
-    currentLineCommand.points.push({ x: e.offsetX, y: e.offsetY });
+  // cursorCommand = new CursorCommand(e.offsetX, e.offsetY);
+  // canvas.dispatchEvent(new Event("drawing-changed"));
+  // const one = 1;
+  // if (e.buttons == one && currentLineCommand) {
+  //   currentLineCommand.points.push({ x: e.offsetX, y: e.offsetY });
+  // }
+
+  if (!currentLineCommand) {
+    toolPreview.setPosition(e.offsetX, e.offsetY);
+    toolPreview.show();
+    canvas.dispatchEvent(new Event("drawing-changed"));
   }
+
+  if (e.buttons === 1 && currentLineCommand) {
+    currentLineCommand.grow(e.offsetX, e.offsetY);
+    canvas.dispatchEvent(new Event("drawing-changed"));
+  }
+
+  // if (!currentLineCommand) {
+  //   if (!toolPreview) {
+  //     toolPreview = new ToolPreview(e.offsetX, e.offsetY);
+  //   } else {
+  //     toolPreview.x = e.offsetX;
+  //     toolPreview.y = e.offsetY;
+  //   }
+  //   canvas.dispatchEvent(new Event("drawing-changed"));
+  // }
 });
 
 canvas.addEventListener("mouseup", () => {
@@ -172,8 +261,12 @@ if (ctx) {
     const y = 0;
     ctx.clearRect(x, y, canvas.width, canvas.height);
     commands.forEach((cmd) => cmd.execute(ctx));
-    if (cursorCommand) {
-      cursorCommand.execute(ctx);
-    }
+    // if (cursorCommand) {
+    //   cursorCommand.execute(ctx);
+    // }
+    toolPreview.draw(ctx);
+    // if (toolPreview) {
+    //   toolPreview.draw(ctx);
+    // }
   });
 }
