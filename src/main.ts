@@ -65,7 +65,7 @@ class ToolPreview {
         ctx.fillText(sticker, this.x, this.y);
       } else {
         ctx.strokeStyle = "black";
-        ctx.lineWidth = markerStyle === "thin" ? 1 : 5;
+        ctx.lineWidth = markerStyle === "thin" ? 3 : 7;
         const yOffset = 0; //was -2
         ctx.beginPath();
         ctx.arc(this.x, this.y + yOffset, ctx.lineWidth / 2, 0, 2 * Math.PI);
