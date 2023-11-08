@@ -222,20 +222,20 @@ em3Button.style.border = "1px solid black"; // Thin black border
 divS.append(em3Button);
 
 //step 9:
-// const customStickerButton = document.createElement("button");
-// customStickerButton.innerHTML = "Create Custom Sticker";
-// customStickerButton.style.padding = "7px";
-// customStickerButton.style.border = "1px solid black";
-// divS.append(customStickerButton);
+const customStickerButton = document.createElement("button");
+customStickerButton.innerHTML = "Create Custom Sticker";
+customStickerButton.style.padding = "7px";
+customStickerButton.style.border = "1px solid black";
+divS.append(customStickerButton);
 
-// customStickerButton.addEventListener("click", () => {
-//   const customStickerText = prompt("Enter a string for your custom sticker: ", "🎛️");
-//   if (customStickerText) {
-//     markerStyle = "sticker";
-//     sticker = customStickerText;
-//     canvas.dispatchEvent(new Event("drawing-changed"));
-//   }
-// });
+customStickerButton.addEventListener("click", () => {
+  const customStickerText = prompt("Enter a string for your custom sticker: ", "🎛️");
+  if (customStickerText) {
+    markerStyle = "sticker";
+    sticker = customStickerText;
+    canvas.dispatchEvent(new Event("drawing-changed"));
+  }
+});
 
 //step 10:
 // const exportButton = document.createElement("button");
@@ -276,7 +276,7 @@ app.appendChild(redoButton);
 app.appendChild(thinButton);
 app.appendChild(thickButton);
 app.append(divS);
-//app.appendChild(exportButton);
+// app.appendChild(exportButton);
 
 clearButton.addEventListener("click", () => {
   const start = 0;
