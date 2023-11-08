@@ -238,31 +238,31 @@ customStickerButton.addEventListener("click", () => {
 });
 
 //step 10:
-// const exportButton = document.createElement("button");
-// exportButton.innerHTML = "Export";
-// exportButton.style.padding = "7px";
-// exportButton.style.border = "1px solid black";
+const exportButton = document.createElement("button");
+exportButton.innerHTML = "Export";
+exportButton.style.padding = "7px";
+exportButton.style.border = "1px solid black";
 
-// exportButton.addEventListener("click", () => {
-//   const exportCanvas = document.createElement("canvas");
-//   exportCanvas.width = 1024;
-//   exportCanvas.height = 1024;
-//   //set the canvas scale to be bigger at 1024x1024
-//   const exportCtx = exportCanvas.getContext("2d");
-//   if (exportCtx) {
-//     exportCtx.scale(4, 4);
-//     commands.forEach((cmd) => {
-//       if (cmd instanceof LineCommand || cmd instanceof StickerCommand) {
-//         cmd.execute(exportCtx);
-//       }
-//     });
-//   }
-//   const dataURL = exportCanvas.toDataURL("image/png");
-//   const a = document.createElement("a");
-//   a.href = dataURL;
-//   a.download = "exported_canvas.png";
-//   a.click();
-// });
+exportButton.addEventListener("click", () => {
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = 1024;
+  exportCanvas.height = 1024;
+  //set the canvas scale to be bigger at 1024x1024
+  const exportCtx = exportCanvas.getContext("2d");
+  if (exportCtx) {
+    exportCtx.scale(4, 4);
+    commands.forEach((cmd) => {
+      if (cmd instanceof LineCommand || cmd instanceof StickerCommand) {
+        cmd.execute(exportCtx);
+      }
+    });
+  }
+  const dataURL = exportCanvas.toDataURL("image/png");
+  const a = document.createElement("a");
+  a.href = dataURL;
+  a.download = "exported_canvas.png";
+  a.click();
+});
 
 document.title = gameName;
 
@@ -276,7 +276,7 @@ app.appendChild(redoButton);
 app.appendChild(thinButton);
 app.appendChild(thickButton);
 app.append(divS);
-// app.appendChild(exportButton);
+app.appendChild(exportButton);
 
 clearButton.addEventListener("click", () => {
   const start = 0;
