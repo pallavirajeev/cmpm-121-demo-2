@@ -86,19 +86,6 @@ class StickerCommand {
     this.stickerStr = stickerStr;
   }
 
-  // setPosition(x: number, y: number) {
-  //   this.x = x;
-  //   this.y = y;
-  // }
-
-  // setSticker(type: string | null) {
-  //   this.type = type;
-  // }
-
-  // clear() {
-  //   this.type = null;
-  // }
-
   execute(ctx: CanvasRenderingContext2D) {
     if (this.stickerStr) {
       ctx.font = "24px sans-serif";
@@ -108,7 +95,6 @@ class StickerCommand {
 }
 
 const toolPreview = new ToolPreview();
-// const stickerPreview = new StickerPreview();
 
 class LineCommand {
   points: { x: number; y: number }[];
@@ -133,7 +119,6 @@ class LineCommand {
     }
     ctx.stroke();
   }
-  //}
   grow(x: number, y: number) {
     this.points.push({ x, y });
   }
@@ -143,7 +128,6 @@ const stickers: { x: number; y: number; type: string }[] = [];
 
 canvas.addEventListener("mouseout", () => {
   toolPreview.hide();
-  // stickerPreview.clear();
   canvas.dispatchEvent(new Event("drawing-changed"));
 });
 
@@ -153,12 +137,7 @@ canvas.addEventListener("mousedown", (e) => {
   toolPreview.hide();
   const thin = 1;
   const thick = 5;
-  // currentLineCommand = new LineCommand(
-  //   e.offsetX,
-  //   e.offsetY,
-  //   markerStyle === "thin" ? thin : thick
-  // );
-  // let currentLineCommand: LineCommand | StickerCommand;
+
   if (markerStyle != "sticker") {
     currentLineCommand = new LineCommand(
       e.offsetX,
@@ -174,34 +153,19 @@ canvas.addEventListener("mousedown", (e) => {
   canvas.dispatchEvent(new Event("drawing-changed"));
 });
 
-canvas.addEventListener(
-  "mousemove",
-  (e) => {
-    // if (markerStyle === "sticker") {
-    //   stickerPreview.setPosition(e.offsetX, e.offsetY);
-    //   stickerPreview.setSticker(sticker);
-    //   canvas.dispatchEvent(new Event("drawing-changed"));
-    // }
-
-    // if (markerStyle === "sticker") {
-    //   stickerPreview.setPosition(e.offsetX, e.offsetY);
-    //   stickerPreview.setSticker(sticker);
-    //   canvas.dispatchEvent(new Event("drawing-changed"));
-    //   } else {
-    if (!currentLineCommand) {
-      toolPreview.setPosition(e.offsetX, e.offsetY);
-      toolPreview.show();
-      //stickerPreview.clear();
-      canvas.dispatchEvent(new Event("drawing-changed"));
-    }
-
-    if (e.buttons === 1 && currentLineCommand) {
-      currentLineCommand.grow(e.offsetX, e.offsetY);
-      canvas.dispatchEvent(new Event("drawing-changed"));
-    }
+canvas.addEventListener("mousemove", (e) => {
+  if (!currentLineCommand) {
+    toolPreview.setPosition(e.offsetX, e.offsetY);
+    toolPreview.show();
+    //stickerPreview.clear();
+    canvas.dispatchEvent(new Event("drawing-changed"));
   }
-  //}
-);
+
+  if (e.buttons === 1 && currentLineCommand) {
+    currentLineCommand.grow(e.offsetX, e.offsetY);
+    canvas.dispatchEvent(new Event("drawing-changed"));
+  }
+});
 
 canvas.addEventListener("mouseup", (e) => {
   if (markerStyle == "sticker") {
@@ -327,10 +291,6 @@ undoButton.addEventListener("click", () => {
     redoCommands.push(commands.pop()!);
     canvas.dispatchEvent(new Event("drawing-changed"));
   }
-  // if (stickers.length > len) {
-  //   stickerCommand.push(stickers.pop()!);
-  //   canvas.dispatchEvent(new Event("drawing-changed"));
-  // }
 });
 
 redoButton.addEventListener("click", () => {
@@ -339,10 +299,6 @@ redoButton.addEventListener("click", () => {
     commands.push(redoCommands.pop()!);
     canvas.dispatchEvent(new Event("drawing-changed"));
   }
-  // if (stickerCommand.length > len) {
-  //   stickers.push(stickerCommand.pop()!);
-  //   canvas.dispatchEvent(new Event("drawing-changed"));
-  // }
 });
 
 thinButton.addEventListener("click", () => {
@@ -379,10 +335,6 @@ if (ctx) {
 
     commands.forEach((cmd: LineCommand | StickerCommand) => cmd.execute(ctx));
 
-    // stickers.forEach((sticker) => {
-    //   ctx.fillText(sticker.type, sticker.x, sticker.y);
-    // });
     toolPreview.draw(ctx);
-    // stickerPreview.draw(ctx);
   });
 }
