@@ -27,13 +27,6 @@ let sticker = "";
 let currentLineCommand: LineCommand | null = null;
 let markerStyle = "thin";
 
-//working on step 12:
-// const colorPicker = document.getElementById("colorPicker");
-// let markerColor = colorPicker.value;
-
-// colorPicker.addEventListener('input', (event) => {
-//   markerColor = event.target.value;
-// });
 
 class ToolPreview {
   x: number;
@@ -62,9 +55,11 @@ class ToolPreview {
   draw(ctx: CanvasRenderingContext2D) {
     if (this.visible) {
       if (markerStyle == "sticker") {
+        ctx.fillStyle = markerColor;
         ctx.fillText(sticker, this.x, this.y);
       } else {
-        ctx.strokeStyle = "black";
+        // ctx.strokeStyle = "black";
+        ctx.strokeStyle = markerColor;
         ctx.lineWidth = markerStyle === "thin" ? 3 : 7;
         const yOffset = 0; //was -2
         ctx.beginPath();
@@ -99,13 +94,15 @@ const toolPreview = new ToolPreview();
 class LineCommand {
   points: { x: number; y: number }[];
   thickness = 1;
-  constructor(x: number, y: number, thickness: number) {
+  color: string;
+  constructor(x: number, y: number, thickness: number, color: string) {
     this.points = [{ x, y }];
     this.thickness = thickness;
+    this.color = color;
   }
   execute(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = "black";
-    // ctx.strokeStyle = markerColor;
+    // ctx.strokeStyle = "black";
+    ctx.strokeStyle = this.color;
     ctx.lineWidth = this.thickness;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
@@ -142,7 +139,9 @@ canvas.addEventListener("mousedown", (e) => {
     currentLineCommand = new LineCommand(
       e.offsetX,
       e.offsetY,
-      markerStyle === "thin" ? thin : thick
+      markerStyle === "thin" ? thin : thick,
+      markerColor  // Use the selected color
+
     );
     const start = 0;
     redoCommands.splice(start, redoCommands.length);
@@ -299,6 +298,22 @@ app.appendChild(thinButton);
 app.appendChild(thickButton);
 app.append(divS);
 app.appendChild(exportButton);
+
+//working on step 12:
+
+let markerColor = "#000000"; // Default color
+
+const colorPicker = document.createElement("input");
+colorPicker.type = "color";
+colorPicker.value = markerColor;
+colorPicker.id = "colorPicker";
+app.append(colorPicker);
+
+colorPicker.addEventListener("input", (event) => {
+  markerColor = (event.target as HTMLInputElement).value;
+  canvas.dispatchEvent(new Event("drawing-changed"));
+});
+
 
 clearButton.addEventListener("click", () => {
   const start = 0;
