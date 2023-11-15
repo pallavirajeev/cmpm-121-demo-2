@@ -227,18 +227,22 @@ const stickersData = [
 ];
 
 stickersData.forEach((stickerData) => {
+  newSticker(stickerData.emoji);
+});
+
+function newSticker(newEmoji: string) {
   const stickerButton = document.createElement("button");
-  stickerButton.innerHTML = stickerData.emoji;
+  stickerButton.innerHTML = newEmoji;
   stickerButton.style.padding = "7px";
   stickerButton.style.border = "1px solid black"; // Thin black border
   divS.append(stickerButton);
 
   stickerButton.addEventListener("click", () => {
     markerStyle = "sticker";
-    sticker = stickerData.emoji;
+    sticker = newEmoji;
     canvas.dispatchEvent(new Event("drawing-changed"));
   });
-});
+}
 
 document.body.appendChild(divS);
 
@@ -252,6 +256,7 @@ divS.append(customStickerButton);
 customStickerButton.addEventListener("click", () => {
   const customStickerText = prompt("Enter a string for your custom sticker: ", "🎛️");
   if (customStickerText) {
+    newSticker(customStickerText);
     markerStyle = "sticker";
     sticker = customStickerText;
     canvas.dispatchEvent(new Event("drawing-changed"));
