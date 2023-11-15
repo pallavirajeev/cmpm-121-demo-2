@@ -203,23 +203,45 @@ thickButton.innerHTML = "Thick";
 thickButton.style.padding = "7px";
 thickButton.style.border = "1px solid black"; // Thin black border
 
-const em1Button = document.createElement("button");
-em1Button.innerHTML = "😄";
-em1Button.style.padding = "7px";
-em1Button.style.border = "1px solid black"; // Thin black border
-divS.append(em1Button);
+// const em1Button = document.createElement("button");
+// em1Button.innerHTML = "😄";
+// em1Button.style.padding = "7px";
+// em1Button.style.border = "1px solid black"; // Thin black border
+// divS.append(em1Button);
 
-const em2Button = document.createElement("button");
-em2Button.innerHTML = "❤️‍🔥";
-em2Button.style.padding = "7px";
-em2Button.style.border = "1px solid black"; // Thin black border
-divS.append(em2Button);
+// const em2Button = document.createElement("button");
+// em2Button.innerHTML = "❤️‍🔥";
+// em2Button.style.padding = "7px";
+// em2Button.style.border = "1px solid black"; // Thin black border
+// divS.append(em2Button);
 
-const em3Button = document.createElement("button");
-em3Button.innerHTML = "🥗";
-em3Button.style.padding = "7px";
-em3Button.style.border = "1px solid black"; // Thin black border
-divS.append(em3Button);
+// const em3Button = document.createElement("button");
+// em3Button.innerHTML = "🥗";
+// em3Button.style.padding = "7px";
+// em3Button.style.border = "1px solid black"; // Thin black border
+// divS.append(em3Button);
+
+const stickersData = [
+  { emoji: "😄", name: "Happy Face" },
+  { emoji: "❤️‍🔥", name: "Heart on Fire" },
+  { emoji: "🥗", name: "Salad" }
+];
+
+stickersData.forEach((stickerData) => {
+  const stickerButton = document.createElement("button");
+  stickerButton.innerHTML = stickerData.emoji;
+  stickerButton.style.padding = "7px";
+  stickerButton.style.border = "1px solid black"; // Thin black border
+  divS.append(stickerButton);
+
+  stickerButton.addEventListener("click", () => {
+    markerStyle = "sticker";
+    sticker = stickerData.emoji;
+    canvas.dispatchEvent(new Event("drawing-changed"));
+  });
+});
+
+document.body.appendChild(divS);
 
 //step 9:
 const customStickerButton = document.createElement("button");
@@ -309,23 +331,23 @@ thickButton.addEventListener("click", () => {
   markerStyle = "thick";
 });
 
-em1Button.addEventListener("click", () => {
-  markerStyle = "sticker";
-  sticker = "😄";
-  canvas.dispatchEvent(new Event("drawing-changed"));
-});
+// em1Button.addEventListener("click", () => {
+//   markerStyle = "sticker";
+//   sticker = "😄";
+//   canvas.dispatchEvent(new Event("drawing-changed"));
+// });
 
-em2Button.addEventListener("click", () => {
-  markerStyle = "sticker";
-  sticker = "❤️‍🔥";
-  canvas.dispatchEvent(new Event("drawing-changed"));
-});
+// em2Button.addEventListener("click", () => {
+//   markerStyle = "sticker";
+//   sticker = "❤️‍🔥";
+//   canvas.dispatchEvent(new Event("drawing-changed"));
+// });
 
-em3Button.addEventListener("click", () => {
-  markerStyle = "sticker";
-  sticker = "🥗";
-  canvas.dispatchEvent(new Event("drawing-changed"));
-});
+// em3Button.addEventListener("click", () => {
+//   markerStyle = "sticker";
+//   sticker = "🥗";
+//   canvas.dispatchEvent(new Event("drawing-changed"));
+// });
 
 if (ctx) {
   canvas.addEventListener("drawing-changed", () => {
