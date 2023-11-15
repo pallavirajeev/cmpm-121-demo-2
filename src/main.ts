@@ -20,8 +20,6 @@ const ctx = canvas.getContext("2d");
 const commands: (LineCommand | StickerCommand)[] = [];
 const redoCommands: (LineCommand | StickerCommand)[] = [];
 
-// const stickerCommand: { x: number; y: number; type: string }[] = [];
-
 let sticker = "";
 
 let currentLineCommand: LineCommand | null = null;
@@ -101,7 +99,6 @@ class LineCommand {
     this.color = color;
   }
   execute(ctx: CanvasRenderingContext2D) {
-    // ctx.strokeStyle = "black";
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.thickness;
     ctx.lineJoin = "round";
@@ -127,8 +124,6 @@ canvas.addEventListener("mouseout", () => {
   toolPreview.hide();
   canvas.dispatchEvent(new Event("drawing-changed"));
 });
-
-//add something to check if currentlyDrawing
 
 canvas.addEventListener("mousedown", (e) => {
   toolPreview.hide();
@@ -201,24 +196,6 @@ const thickButton = document.createElement("button");
 thickButton.innerHTML = "Thick";
 thickButton.style.padding = "7px";
 thickButton.style.border = "1px solid black"; // Thin black border
-
-// const em1Button = document.createElement("button");
-// em1Button.innerHTML = "😄";
-// em1Button.style.padding = "7px";
-// em1Button.style.border = "1px solid black"; // Thin black border
-// divS.append(em1Button);
-
-// const em2Button = document.createElement("button");
-// em2Button.innerHTML = "❤️‍🔥";
-// em2Button.style.padding = "7px";
-// em2Button.style.border = "1px solid black"; // Thin black border
-// divS.append(em2Button);
-
-// const em3Button = document.createElement("button");
-// em3Button.innerHTML = "🥗";
-// em3Button.style.padding = "7px";
-// em3Button.style.border = "1px solid black"; // Thin black border
-// divS.append(em3Button);
 
 const stickersData = [
   { emoji: "😄", name: "Happy Face" },
@@ -351,23 +328,6 @@ thickButton.addEventListener("click", () => {
   markerStyle = "thick";
 });
 
-// em1Button.addEventListener("click", () => {
-//   markerStyle = "sticker";
-//   sticker = "😄";
-//   canvas.dispatchEvent(new Event("drawing-changed"));
-// });
-
-// em2Button.addEventListener("click", () => {
-//   markerStyle = "sticker";
-//   sticker = "❤️‍🔥";
-//   canvas.dispatchEvent(new Event("drawing-changed"));
-// });
-
-// em3Button.addEventListener("click", () => {
-//   markerStyle = "sticker";
-//   sticker = "🥗";
-//   canvas.dispatchEvent(new Event("drawing-changed"));
-// });
 
 if (ctx) {
   canvas.addEventListener("drawing-changed", () => {
